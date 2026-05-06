@@ -3,235 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conflict Monitoring Dashboard | Consolee-K</title>
+    <title>Adaptive Education Intelligence System | Conflict Regions</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --ssa-red: #ef4444;
-            --me-orange: #f97316;
-            --sea-yellow: #eab308;
-            --bg-dark: #0f172a;
-            --panel-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; width: 100%; font-family: 'Inter', sans-serif; overflow: hidden; }
         
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        /* Header Styling */
-        header {
-            background: linear-gradient(to right, #1e293b, #0f172a);
-            padding: 20px 40px;
-            border-bottom: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        #map { height: 100%; width: 100%; background: #0b0e14; }
+
+        /* Minimalist Overlay Label */
+        .map-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            pointer-events: none;
         }
+        .map-title h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .map-title p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
 
-        .brand h1 { font-size: 22px; font-weight: 800; letter-spacing: -1px; }
-        .brand h1 span { color: var(--ssa-red); }
-        .brand p { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-
-        /* Main Layout */
-        .main-container {
-            flex: 1;
-            display: flex;
-            position: relative;
-        }
-
-        #map {
-            flex: 1;
-            height: 100%;
-            background: #020617;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            width: 400px;
-            background: var(--panel-bg);
-            border-left: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
+        /* Simple Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
             z-index: 1000;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.3);
-        }
-
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-
-        .section-title {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            margin-bottom: 16px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 8px;
-        }
-
-        /* Regional Cards */
-        .region-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: 0.3s;
-        }
-
-        .region-card:hover { border-color: #475569; background: rgba(255,255,255,0.05); }
-
-        .region-header { display: flex; align-items: center; margin-bottom: 12px; }
-        .region-icon { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; }
-        .region-name { font-weight: 700; font-size: 14px; }
-        .region-count { margin-left: auto; font-size: 11px; background: #334155; padding: 2px 8px; border-radius: 10px; }
-
-        .country-list { display: flex; flex-wrap: wrap; gap: 6px; }
-        .country-tag {
-            font-size: 11px;
-            background: rgba(0,0,0,0.2);
-            padding: 4px 10px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px;
             border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer;
-            transition: 0.2s;
+            color: white;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .country-tag:hover { background: #3b82f6; border-color: #60a5fa; color: white; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; }
 
-        /* Custom Popup */
-        .leaflet-popup-content-wrapper { background: #0f172a; color: white; border-radius: 12px; padding: 0; overflow: hidden; }
-        .popup-head { padding: 12px 16px; color: white; font-weight: 700; font-size: 15px; }
-        .popup-body { padding: 12px 16px; font-size: 13px; color: #cbd5e1; border-top: 1px solid #334155; }
-
-        @media (max-width: 1024px) {
-            .sidebar { width: 300px; }
-        }
-
-        @media (max-width: 768px) {
-            .main-container { flex-direction: column; }
-            .sidebar { width: 100%; height: 350px; border-left: none; border-top: 1px solid #334155; }
-        }
+        /* Clean Popups */
+        .leaflet-popup-content-wrapper { background: #0f172a; color: white; border-radius: 4px; }
+        .leaflet-popup-tip { background: #0f172a; }
+        .popup-content b { color: #3b82f6; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="brand">
-            <h1>CONFLICT <span>MONITOR</span></h1>
-            <p>Unified Regional Data Dashboard</p>
-        </div>
-        <div style="text-align: right;">
-            <div style="font-size: 14px; font-weight: 700;">15 Countries</div>
-            <div style="font-size: 11px; color: var(--text-dim);">Live Perspective</div>
-        </div>
-    </header>
-    
-    <div class="main-container">
-        <div id="map"></div>
-        
-        <div class="sidebar">
-            <div class="sidebar-content">
-                <div class="section-title">Regional Categories</div>
-                
-                <div class="region-card" id="card-ssa">
-                    <div class="region-header">
-                        <div class="region-icon" style="background: var(--ssa-red);"></div>
-                        <div class="region-name">Sub-Saharan Africa</div>
-                        <div class="region-count">6 Countries</div>
-                    </div>
-                    <div class="country-list" id="list-ssa"></div>
-                </div>
+    <div class="map-title">
+        <h1>Adaptive Education Intelligence System</h1>
+        <p>Target Regions for Educational Continuity & Resilience</p>
+    </div>
 
-                <div class="region-card" id="card-me">
-                    <div class="region-header">
-                        <div class="region-icon" style="background: var(--me-orange);"></div>
-                        <div class="region-name">Middle East</div>
-                        <div class="region-count">4 Countries</div>
-                    </div>
-                    <div class="country-list" id="list-me"></div>
-                </div>
+    <div id="map"></div>
 
-                <div class="region-card" id="card-sea">
-                    <div class="region-header">
-                        <div class="region-icon" style="background: var(--sea-yellow);"></div>
-                        <div class="region-name">South-East Asia</div>
-                        <div class="region-count">5 Countries</div>
-                    </div>
-                    <div class="country-list" id="list-sea"></div>
-                </div>
-
-                <div style="margin-top: 20px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
-                    <h4 style="font-size: 13px; color: #60a5fa; margin-bottom: 6px;">Data Summary</h4>
-                    <p style="font-size: 12px; color: var(--text-dim); line-height: 1.5;">
-                        This map visualizes 15 countries across three critical regions, color-coded for rapid identification and analysis.
-                    </p>
-                </div>
-            </div>
-        </div>
+    <div class="legend">
+        <div style="font-weight: 700; margin-bottom: 10px; color: #60a5fa;">Intelligence Priority Zones</div>
+        <div class="legend-item"><div class="dot" style="background: #ef4444;"></div> Sub-Saharan Africa</div>
+        <div class="legend-item"><div class="dot" style="background: #f97316;"></div> Middle East</div>
+        <div class="legend-item"><div class="dot" style="background: #eab308;"></div> South-East Asia</div>
     </div>
     
-    <!-- Leaflet JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    
     <script>
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
         }).setView([15, 55], 3);
 
-        L.control.zoom({ position: 'bottomleft' }).addTo(map);
-
-        // Dark Professional Tiles
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; CARTO'
         }).addTo(map);
 
-        const data = [
-            // Sub-Saharan Africa (Red)
-            { name: "Nigeria", coords: [9.08, 7.40], reg: "SSA", color: "#ef4444" },
-            { name: "Somalia", coords: [2.04, 45.34], reg: "SSA", color: "#ef4444" },
-            { name: "South Sudan", coords: [4.85, 31.57], reg: "SSA", color: "#ef4444" },
-            { name: "Ethiopia", coords: [9.03, 38.74], reg: "SSA", color: "#ef4444" },
-            { name: "DRC", coords: [-4.32, 15.32], reg: "SSA", color: "#ef4444" },
-            { name: "Cameroon", coords: [3.85, 11.50], reg: "SSA", color: "#ef4444" },
+        const priorityRegions = [
+            // SSA (Red)
+            { name: "Nigeria", coords: [9.08, 7.40], color: "#ef4444", info: "High displacement; critical need for remote adaptive learning." },
+            { name: "Somalia", coords: [2.04, 45.34], color: "#ef4444", info: "Fragmented infrastructure; intelligence hub required for tracking learning gaps." },
+            { name: "South Sudan", coords: [4.85, 31.57], color: "#ef4444", info: "Emergent education system; focus on data-driven resilience." },
+            { name: "Ethiopia", coords: [9.03, 38.74], color: "#ef4444", info: "Regional instability impacting 2M+ learners." },
+            { name: "DRC", coords: [-4.32, 15.32], color: "#ef4444", info: "Vast geographic barriers; needs offline-first adaptive intelligence." },
+            { name: "Cameroon", coords: [3.85, 11.50], color: "#ef4444", info: "Conflict-driven school closures in NW/SW regions." },
             
-            // Middle East (Orange)
-            { name: "Syria", coords: [34.8, 38.99], reg: "ME", color: "#f97316" },
-            { name: "Yemen", coords: [15.35, 48.5], reg: "ME", color: "#f97316" },
-            { name: "Iraq", coords: [33.31, 44.36], reg: "ME", color: "#f97316" },
-            { name: "Lebanon", coords: [33.89, 35.50], reg: "ME", color: "#f97316" },
+            // ME (Orange)
+            { name: "Syria", coords: [34.8, 38.99], color: "#f97316", info: "Protracted crisis; massive educational data fragmentation." },
+            { name: "Yemen", coords: [15.35, 48.5], color: "#f97316", info: "Systemic collapse; urgent need for mobile intelligence units." },
+            { name: "Iraq", coords: [33.31, 44.36], color: "#f97316", info: "Post-conflict rebuilding; data-driven placement needed." },
+            { name: "Lebanon", coords: [33.89, 35.50], color: "#f97316", info: "High refugee density; cross-border intelligence required." },
             
-            // South-East Asia (Yellow)
-            { name: "Myanmar", coords: [21.91, 95.95], reg: "SEA", color: "#eab308" },
-            { name: "Philippines", coords: [12.87, 121.77], reg: "SEA", color: "#eab308" },
-            { name: "Thailand", coords: [15.87, 100.99], reg: "SEA", color: "#eab308" },
-            { name: "Laos", coords: [19.85, 102.49], reg: "SEA", color: "#eab308" },
-            { name: "Cambodia", coords: [12.56, 104.91], reg: "SEA", color: "#eab308" }
+            // SEA (Yellow)
+            { name: "Myanmar", coords: [21.91, 95.95], color: "#eab308", info: "Political instability; decentralized learning intelligence focus." },
+            { name: "Philippines", coords: [12.87, 121.77], color: "#eab308", info: "Mindanao region focus; localized conflict data tracking." },
+            { name: "Thailand", coords: [15.87, 100.99], color: "#eab308", info: "Southern border focus; bilingual intelligence systems." },
+            { name: "Laos", coords: [17.97, 102.63], color: "#eab308", info: "Rural-conflict overlap; digital bridge intelligence." },
+            { name: "Cambodia", coords: [12.56, 104.91], color: "#eab308", info: "Legacy conflict impact; monitoring long-term learning outcomes." }
         ];
 
-        data.forEach(loc => {
-            // Add Marker to Map
+        priorityRegions.forEach(loc => {
             const marker = L.circleMarker(loc.coords, {
-                radius: 10,
+                radius: 12,
                 fillColor: loc.color,
                 color: "#fff",
                 weight: 2,
@@ -240,24 +117,11 @@
             }).addTo(map);
 
             marker.bindPopup(`
-                <div class="popup-head" style="background: ${loc.color}">${loc.name}</div>
-                <div class="popup-body">
-                    <b>Region:</b> ${loc.reg === 'SSA' ? 'Sub-Saharan Africa' : (loc.reg === 'ME' ? 'Middle East' : 'South-East Asia')}<br/>
-                    <b>Status:</b> Active Monitoring
+                <div class="popup-content">
+                    <b style="color: ${loc.color}">${loc.name}</b><br/>
+                    <p style="margin-top: 5px; font-size: 13px;">${loc.info}</p>
                 </div>
             `);
-
-            // Add Tag to Sidebar
-            const listId = loc.reg === 'SSA' ? 'list-ssa' : (loc.reg === 'ME' ? 'list-me' : 'list-sea');
-            const list = document.getElementById(listId);
-            const tag = document.createElement('div');
-            tag.className = 'country-tag';
-            tag.innerText = loc.name;
-            tag.onclick = () => {
-                map.flyTo(loc.coords, 6);
-                marker.openPopup();
-            };
-            list.appendChild(tag);
         });
     </script>
 </body>
