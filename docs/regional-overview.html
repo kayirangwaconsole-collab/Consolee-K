@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Conflict Overview</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav {
+            background: #ffffff;
+            padding: 15px 40px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .nav h1 { font-size: 18px; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .container { flex: 1; position: relative; }
+        #map { height: 100%; width: 100%; background: #e5e7eb; }
+
+        .region-legend {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+            min-width: 220px;
+        }
+
+        .legend-title { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 12px; text-transform: uppercase; }
+        
+        .legend-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 500; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+
+        /* Popup Styles */
+        .leaflet-popup-content-wrapper { border-radius: 4px; padding: 0; overflow: hidden; }
+        .popup-header { background: #1e293b; color: white; padding: 10px 15px; font-weight: 600; font-size: 14px; }
+        .popup-body { padding: 12px 15px; font-size: 13px; color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <h1>Global Region Monitoring</h1>
+        <div style="font-size: 12px; color: #64748b;">15 Active Regions Tracked</div>
+    </div>
+    
+    <div class="container">
+        <div id="map"></div>
+        
+        <div class="region-legend">
+            <div class="legend-title">Regional Categories</div>
+            <div class="legend-row">
+                <div class="dot" style="background: #dc2626;"></div>
+                <span>Sub-Saharan Africa (6)</span>
+            </div>
+            <div class="legend-row">
+                <div class="dot" style="background: #2563eb;"></div>
+                <span>Middle East (4)</span>
+            </div>
+            <div class="legend-row">
+                <div class="dot" style="background: #059669;"></div>
+                <span>South-East Asia (5)</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <script>
+        const map = L.map('map', {
+            center: [15, 60],
+            zoom: 3,
+            zoomControl: false
+        });
+
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        // Minimalist Light Tiles
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO'
+        }).addTo(map);
+
+        const data = [
+            // Sub-Saharan Africa (Red)
+            { name: "Nigeria", coords: [9.08, 7.40], reg: "SSA", color: "#dc2626" },
+            { name: "Somalia", coords: [2.04, 45.34], reg: "SSA", color: "#dc2626" },
+            { name: "South Sudan", coords: [4.85, 31.57], reg: "SSA", color: "#dc2626" },
+            { name: "Ethiopia", coords: [9.03, 38.74], reg: "SSA", color: "#dc2626" },
+            { name: "DRC", coords: [-4.32, 15.32], reg: "SSA", color: "#dc2626" },
+            { name: "Cameroon", coords: [3.85, 11.50], reg: "SSA", color: "#dc2626" },
+            
+            // Middle East (Blue)
+            { name: "Syria", coords: [33.51, 36.27], reg: "ME", color: "#2563eb" },
+            { name: "Yemen", coords: [15.35, 44.20], reg: "ME", color: "#2563eb" },
+            { name: "Iraq", coords: [33.31, 44.36], reg: "ME", color: "#2563eb" },
+            { name: "Lebanon", coords: [33.89, 35.50], reg: "ME", color: "#2563eb" },
+            
+            // South-East Asia (Green)
+            { name: "Myanmar", coords: [16.86, 96.19], reg: "SEA", color: "#059669" },
+            { name: "Philippines", coords: [14.59, 120.98], reg: "SEA", color: "#059669" },
+            { name: "Thailand", coords: [13.75, 100.50], reg: "SEA", color: "#059669" },
+            { name: "Laos", coords: [17.97, 102.63], reg: "SEA", color: "#059669" },
+            { name: "Cambodia", coords: [11.55, 104.91], reg: "SEA", color: "#059669" }
+        ];
+
+        data.forEach(loc => {
+            const marker = L.circleMarker(loc.coords, {
+                radius: 10,
+                fillColor: loc.color,
+                color: "#fff",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <div class="popup-header">${loc.name}</div>
+                <div class="popup-body">
+                    Region: <b>${loc.reg}</b><br/>
+                    Status: <span style="color: ${loc.color}">Active Monitoring</span>
+                </div>
+            `);
+        });
+    </script>
+</body>
+</html>
