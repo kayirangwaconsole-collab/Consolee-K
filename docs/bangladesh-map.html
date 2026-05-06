@@ -44,6 +44,37 @@
         .header h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
         .header h1 span { color: var(--bd-red); }
         
+        .controls {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: var(--bd-green);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 106, 78, 0.3);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.08);
+            color: #f8fafc;
+        }
+        
         .main-container { flex: 1; display: flex; position: relative; }
         
         #map { flex: 1; height: 100%; background: var(--dark-bg); }
@@ -127,22 +158,26 @@
 <body>
     <div class="header">
         <h1>BANGLADESH <span>DATA</span> INSIGHTS</h1>
-        <div style="font-size: 12px; color: #94a3b8;">Census 2022 & Economic Data</div>
+        <div class="controls">
+            <button class="toggle-btn active" id="pop-btn" onclick="setView('population')">Population</button>
+            <button class="toggle-btn" id="econ-btn" onclick="setView('economic')">Economic</button>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8;" class="header-subtitle">Census 2022 & EPZ Data</div>
     </div>
     
     <div class="main-container">
         <div id="map"></div>
         <div class="info-panel">
-            <div>
+            <div id="summary-section">
                 <div class="section-title">National Summary</div>
                 <div class="stats-grid">
                     <div class="stat-box">
                         <small>Avg Density</small>
-                        <span>1,119/km²</span>
+                        <span id="stat-1">1,119/km²</span>
                     </div>
                     <div class="stat-box">
                         <small>Active EPZs</small>
-                        <span>8 Major</span>
+                        <span id="stat-2">8 Major</span>
                     </div>
                 </div>
             </div>
@@ -157,6 +192,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     
     <script>
+        let currentView = 'population';
+        const markers = [];
+
         const map = L.map('map', {
             zoomControl: false
         }).setView([23.8, 90.3], 7);
@@ -178,51 +216,93 @@
             { name: "Uttara (Nilphamari)", type: "EPZ", coords: [25.8450, 88.8443], density: 1050, econ: "High", desc: "Transforming the northern economy via manufacturing." }
         ];
 
+        function getStyle(loc) {
+            if (currentView === 'population') {
+                return {
+                    radius: Math.sqrt(loc.density) / 1.5,
+                    fillColor: "#38bdf8",
+                    color: "#fff",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.5
+                };
+            } else {
+                const color = loc.econ === "Very High" ? "#f42a41" : (loc.econ === "High" ? "#fbbf24" : "#10b981");
+                return {
+                    radius: 12,
+                    fillColor: color,
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                };
+            }
+        }
+
+        function renderMarkers() {
+            markers.forEach(m => map.removeLayer(m));
+            markers.length = 0;
+
+            data.forEach(loc => {
+                const style = getStyle(loc);
+                const marker = L.circleMarker(loc.coords, style).addTo(map);
+                
+                const color = loc.econ === "Very High" ? "#f42a41" : (loc.econ === "High" ? "#fbbf24" : "#10b981");
+                const popupContent = `
+                    <div style="font-family: inherit; width: 220px;">
+                        <b style="font-size: 16px; color: ${currentView === 'population' ? '#38bdf8' : color}">${loc.name}</b><br/>
+                        <div style="margin: 8px 0;">
+                            <span class="data-label" style="background: rgba(255,255,255,0.1)">${loc.type}</span>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.4; color: #cbd5e1;">
+                            <b>${currentView === 'population' ? 'Density' : 'Econ Status'}:</b> 
+                            ${currentView === 'population' ? loc.density + '/km²' : loc.econ}<br/>
+                            <p style="margin-top: 5px;">${loc.desc}</p>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent, { className: 'custom-popup' });
+                markers.push(marker);
+            });
+        }
+
+        function setView(view) {
+            currentView = view;
+            document.getElementById('pop-btn').classList.toggle('active', view === 'population');
+            document.getElementById('econ-btn').classList.toggle('active', view === 'economic');
+            
+            // Update Summary stats
+            if (view === 'population') {
+                document.getElementById('stat-1').innerText = '1,119/km²';
+                document.getElementById('stat-2').innerText = '8 Major';
+                document.getElementById('stat-1').previousElementSibling.innerText = 'Avg Density';
+                document.getElementById('stat-2').previousElementSibling.innerText = 'Active EPZs';
+            } else {
+                document.getElementById('stat-1').innerText = 'USD 45B+';
+                document.getElementById('stat-2').innerText = 'Top 2';
+                document.getElementById('stat-1').previousElementSibling.innerText = 'Export Value';
+                document.getElementById('stat-2').previousElementSibling.innerText = 'RM World Rank';
+            }
+
+            renderMarkers();
+        }
+
         const listContainer = document.getElementById('location-list');
-
-        data.forEach(loc => {
-            // Visual logic: Radius based on density, Color based on economic significance
-            const radius = Math.sqrt(loc.density) / 2;
-            const color = loc.econ === "Very High" ? "#f42a41" : (loc.econ === "High" ? "#fbbf24" : "#10b981");
-
-            const marker = L.circleMarker(loc.coords, {
-                radius: radius,
-                fillColor: color,
-                color: "#fff",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.6
-            }).addTo(map);
-
-            const popupContent = `
-                <div style="font-family: inherit; width: 200px;">
-                    <b style="font-size: 16px; color: ${color}">${loc.name}</b><br/>
-                    <div style="margin: 8px 0;">
-                        <span class="data-label" style="background: rgba(255,255,255,0.1)">${loc.type}</span>
-                        <span class="data-label" style="background: ${color}33; color: ${color}">Econ: ${loc.econ}</span>
-                    </div>
-                    <div style="font-size: 12px; line-height: 1.4; color: #cbd5e1;">
-                        <b>Density:</b> ${loc.density}/km²<br/>
-                        <b>Insight:</b> ${loc.desc}
-                    </div>
-                </div>
-            `;
-
-            marker.bindPopup(popupContent, { className: 'custom-popup' });
-
-            // Create list item
+        data.forEach((loc, index) => {
             const item = document.createElement('div');
             item.className = 'loc-item';
             item.innerHTML = `
                 <h4>${loc.name}</h4>
-                <p>${loc.type} • Density: ${loc.density}</p>
+                <p>${loc.type}</p>
             `;
             item.onclick = () => {
                 map.flyTo(loc.coords, 10);
-                marker.openPopup();
+                markers[index].openPopup();
             };
             listContainer.appendChild(item);
         });
+
+        renderMarkers();
     </script>
 </body>
 </html>
