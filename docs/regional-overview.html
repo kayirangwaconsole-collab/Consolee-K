@@ -53,10 +53,10 @@
         .legend-title { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 12px; text-transform: uppercase; }
         
         .legend-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 500; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; border: 1px solid rgba(0,0,0,0.1); }
 
         /* Popup Styles */
-        .leaflet-popup-content-wrapper { border-radius: 4px; padding: 0; overflow: hidden; }
+        .leaflet-popup-content-wrapper { border-radius: 4px; padding: 0; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         .popup-header { background: #1e293b; color: white; padding: 10px 15px; font-weight: 600; font-size: 14px; }
         .popup-body { padding: 12px 15px; font-size: 13px; color: #475569; }
     </style>
@@ -73,16 +73,16 @@
         <div class="region-legend">
             <div class="legend-title">Regional Categories</div>
             <div class="legend-row">
-                <div class="dot" style="background: #dc2626;"></div>
-                <span>Sub-Saharan Africa (6)</span>
+                <div class="dot" style="background: #ef4444;"></div>
+                <span>🔴 Sub-Saharan Africa (6)</span>
             </div>
             <div class="legend-row">
-                <div class="dot" style="background: #2563eb;"></div>
-                <span>Middle East (4)</span>
+                <div class="dot" style="background: #f97316;"></div>
+                <span>🟠 Middle East (4)</span>
             </div>
             <div class="legend-row">
-                <div class="dot" style="background: #059669;"></div>
-                <span>South-East Asia (5)</span>
+                <div class="dot" style="background: #eab308;"></div>
+                <span>🟡 South-East Asia (5)</span>
             </div>
         </div>
     </div>
@@ -105,25 +105,25 @@
 
         const data = [
             // Sub-Saharan Africa (Red)
-            { name: "Nigeria", coords: [9.08, 7.40], reg: "SSA", color: "#dc2626" },
-            { name: "Somalia", coords: [2.04, 45.34], reg: "SSA", color: "#dc2626" },
-            { name: "South Sudan", coords: [4.85, 31.57], reg: "SSA", color: "#dc2626" },
-            { name: "Ethiopia", coords: [9.03, 38.74], reg: "SSA", color: "#dc2626" },
-            { name: "DRC", coords: [-4.32, 15.32], reg: "SSA", color: "#dc2626" },
-            { name: "Cameroon", coords: [3.85, 11.50], reg: "SSA", color: "#dc2626" },
+            { name: "Nigeria", coords: [9.08, 7.40], reg: "SSA", color: "#ef4444" },
+            { name: "Somalia", coords: [2.04, 45.34], reg: "SSA", color: "#ef4444" },
+            { name: "South Sudan", coords: [4.85, 31.57], reg: "SSA", color: "#ef4444" },
+            { name: "Ethiopia", coords: [9.03, 38.74], reg: "SSA", color: "#ef4444" },
+            { name: "Democratic Republic of Congo", coords: [-4.32, 15.32], reg: "SSA", color: "#ef4444" },
+            { name: "Cameroon", coords: [3.85, 11.50], reg: "SSA", color: "#ef4444" },
             
-            // Middle East (Blue)
-            { name: "Syria", coords: [33.51, 36.27], reg: "ME", color: "#2563eb" },
-            { name: "Yemen", coords: [15.35, 44.20], reg: "ME", color: "#2563eb" },
-            { name: "Iraq", coords: [33.31, 44.36], reg: "ME", color: "#2563eb" },
-            { name: "Lebanon", coords: [33.89, 35.50], reg: "ME", color: "#2563eb" },
+            // Middle East (Orange)
+            { name: "Syria", coords: [34.8, 38.99], reg: "ME", color: "#f97316" },
+            { name: "Yemen", coords: [15.35, 48.5], reg: "ME", color: "#f97316" },
+            { name: "Iraq", coords: [33.31, 44.36], reg: "ME", color: "#f97316" },
+            { name: "Lebanon", coords: [33.89, 35.50], reg: "ME", color: "#f97316" },
             
-            // South-East Asia (Green)
-            { name: "Myanmar", coords: [16.86, 96.19], reg: "SEA", color: "#059669" },
-            { name: "Philippines", coords: [14.59, 120.98], reg: "SEA", color: "#059669" },
-            { name: "Thailand", coords: [13.75, 100.50], reg: "SEA", color: "#059669" },
-            { name: "Laos", coords: [17.97, 102.63], reg: "SEA", color: "#059669" },
-            { name: "Cambodia", coords: [11.55, 104.91], reg: "SEA", color: "#059669" }
+            // South-East Asia (Yellow)
+            { name: "Myanmar", coords: [21.91, 95.95], reg: "SEA", color: "#eab308" },
+            { name: "Philippines", coords: [12.87, 121.77], reg: "SEA", color: "#eab308" },
+            { name: "Thailand", coords: [15.87, 100.99], reg: "SEA", color: "#eab308" },
+            { name: "Laos", coords: [19.85, 102.49], reg: "SEA", color: "#eab308" },
+            { name: "Cambodia", coords: [12.56, 104.91], reg: "SEA", color: "#eab308" }
         ];
 
         data.forEach(loc => {
@@ -137,10 +137,12 @@
             }).addTo(map);
 
             marker.bindPopup(`
-                <div class="popup-header">${loc.name}</div>
-                <div class="popup-body">
-                    Region: <b>${loc.reg}</b><br/>
-                    Status: <span style="color: ${loc.color}">Active Monitoring</span>
+                <div style="min-width: 180px;">
+                    <div class="popup-header">${loc.name}</div>
+                    <div class="popup-body">
+                        Region: <b>${loc.reg}</b><br/>
+                        Status: <span style="color: ${loc.color}; font-weight: bold;">Active Monitoring</span>
+                    </div>
                 </div>
             `);
         });
