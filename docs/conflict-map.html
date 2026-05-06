@@ -7,6 +7,8 @@
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -16,118 +18,233 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 30px 40px;
+            border-bottom: 1px solid #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             z-index: 100;
         }
         
         .header h1 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 24px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 32px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .header p {
-            color: #666;
-            font-size: 14px;
+            color: #cbd5e1;
+            font-size: 15px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
         }
         
         .map-container {
             flex: 1;
             display: flex;
-            gap: 20px;
-            padding: 20px;
+            gap: 24px;
+            padding: 24px;
+            background: #0f172a;
         }
         
         #map {
             flex: 1;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+            overflow: hidden;
         }
         
         .legend {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            width: 280px;
-            max-height: 600px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            max-height: 80vh;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #475569 #1e293b;
+        }
+        
+        .legend::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .legend::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .legend::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        
+        .legend::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
         
         .legend h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 16px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 12px;
         }
         
         .legend-section {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .legend-section:hover {
+            background: rgba(30, 41, 59, 0.8);
+            transform: translateX(4px);
+        }
+        
+        .legend-section.ssa {
+            border-left-color: #ef4444;
+        }
+        
+        .legend-section.me {
+            border-left-color: #f97316;
+        }
+        
+        .legend-section.sea {
+            border-left-color: #eab308;
         }
         
         .legend-section h4 {
-            color: #667eea;
-            font-size: 13px;
-            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
         }
         
         .legend-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
             font-size: 13px;
-            color: #555;
+            color: #cbd5e1;
+            line-height: 1.5;
         }
         
         .legend-color {
-            width: 16px;
-            height: 16px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            margin-right: 10px;
+            margin-right: 12px;
+            margin-top: 3px;
+            flex-shrink: 0;
             border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #ddd;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
         }
         
         .stats {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 16px;
+            border-radius: 8px;
         }
         
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
+            margin-bottom: 12px;
             font-size: 13px;
+            color: #cbd5e1;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-label {
+            font-weight: 500;
         }
         
         .stat-value {
-            font-weight: 600;
-            color: #667eea;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        @media (max-width: 768px) {
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            animation: fadeIn 0.6s ease;
+        }
+        
+        .map-container {
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @media (max-width: 1024px) {
             .map-container {
                 flex-direction: column;
             }
             
             .legend {
                 width: 100%;
-                max-height: none;
+                max-height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .map-container {
+                gap: 16px;
+                padding: 16px;
+            }
+            
+            .legend {
+                width: 100%;
+                max-height: 350px;
             }
         }
     </style>
@@ -142,43 +259,43 @@
         <div id="map"></div>
         
         <div class="legend">
-            <h3>📍 Regions & Countries</h3>
+            <h3>📍 Regions</h3>
             
-            <div class="legend-section">
+            <div class="legend-section ssa">
                 <h4>🔴 Sub-Saharan Africa</h4>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #EF5350;"></span>
-                    <span>Nigeria, Somalia, South Sudan, Ethiopia, DRC, Cameroon</span>
+                    <span class="legend-color" style="background: #ef4444;"></span>
+                    <span><strong>6 countries:</strong> Nigeria, Somalia, South Sudan, Ethiopia, DRC, Cameroon</span>
                 </div>
             </div>
             
-            <div class="legend-section">
+            <div class="legend-section me">
                 <h4>🟠 Middle East</h4>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #FF9800;"></span>
-                    <span>Syria, Yemen, Iraq, Lebanon</span>
+                    <span class="legend-color" style="background: #f97316;"></span>
+                    <span><strong>4 countries:</strong> Syria, Yemen, Iraq, Lebanon</span>
                 </div>
             </div>
             
-            <div class="legend-section">
+            <div class="legend-section sea">
                 <h4>🟡 South-East Asia</h4>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #FFEB3B;"></span>
-                    <span>Myanmar, Philippines, Thailand, Laos, Cambodia</span>
+                    <span class="legend-color" style="background: #eab308;"></span>
+                    <span><strong>5 countries:</strong> Myanmar, Philippines, Thailand, Laos, Cambodia</span>
                 </div>
             </div>
             
             <div class="stats">
                 <div class="stat-item">
-                    <span>Total Countries:</span>
+                    <span class="stat-label">Total Countries</span>
                     <span class="stat-value">15</span>
                 </div>
                 <div class="stat-item">
-                    <span>Regions Covered:</span>
+                    <span class="stat-label">Regions</span>
                     <span class="stat-value">3</span>
                 </div>
                 <div class="stat-item">
-                    <span>Status:</span>
+                    <span class="stat-label">Status</span>
                     <span class="stat-value">Affected</span>
                 </div>
             </div>
@@ -201,58 +318,83 @@
         // Country data with coordinates and regions
         const countries = [
             // Sub-Saharan Africa - Red
-            { name: 'Nigeria', coords: [9.0765, 7.3986], region: 'Sub-Saharan Africa', color: '#EF5350' },
-            { name: 'Somalia', coords: [5.1521, 46.1996], region: 'Sub-Saharan Africa', color: '#EF5350' },
-            { name: 'South Sudan', coords: [6.8770, 31.3070], region: 'Sub-Saharan Africa', color: '#EF5350' },
-            { name: 'Ethiopia', coords: [9.1450, 40.4897], region: 'Sub-Saharan Africa', color: '#EF5350' },
-            { name: 'Democratic Republic of Congo', coords: [-4.0383, 21.7587], region: 'Sub-Saharan Africa', color: '#EF5350' },
-            { name: 'Cameroon', coords: [3.8480, 11.5021], region: 'Sub-Saharan Africa', color: '#EF5350' },
+            { name: 'Nigeria', coords: [9.0765, 7.3986], region: 'Sub-Saharan Africa', color: '#ef4444' },
+            { name: 'Somalia', coords: [5.1521, 46.1996], region: 'Sub-Saharan Africa', color: '#ef4444' },
+            { name: 'South Sudan', coords: [6.8770, 31.3070], region: 'Sub-Saharan Africa', color: '#ef4444' },
+            { name: 'Ethiopia', coords: [9.1450, 40.4897], region: 'Sub-Saharan Africa', color: '#ef4444' },
+            { name: 'Democratic Republic of Congo', coords: [-4.0383, 21.7587], region: 'Sub-Saharan Africa', color: '#ef4444' },
+            { name: 'Cameroon', coords: [3.8480, 11.5021], region: 'Sub-Saharan Africa', color: '#ef4444' },
             
             // Middle East - Orange
-            { name: 'Syria', coords: [34.8021, 38.9968], region: 'Middle East', color: '#FF9800' },
-            { name: 'Yemen', coords: [15.3694, 48.5164], region: 'Middle East', color: '#FF9800' },
-            { name: 'Iraq', coords: [33.3128, 44.3615], region: 'Middle East', color: '#FF9800' },
-            { name: 'Lebanon', coords: [33.8547, 35.8623], region: 'Middle East', color: '#FF9800' },
+            { name: 'Syria', coords: [34.8021, 38.9968], region: 'Middle East', color: '#f97316' },
+            { name: 'Yemen', coords: [15.3694, 48.5164], region: 'Middle East', color: '#f97316' },
+            { name: 'Iraq', coords: [33.3128, 44.3615], region: 'Middle East', color: '#f97316' },
+            { name: 'Lebanon', coords: [33.8547, 35.8623], region: 'Middle East', color: '#f97316' },
             
             // South-East Asia - Yellow
-            { name: 'Myanmar', coords: [21.9162, 95.9560], region: 'South-East Asia', color: '#FFEB3B' },
-            { name: 'Philippines', coords: [12.8797, 121.7740], region: 'South-East Asia', color: '#FFEB3B' },
-            { name: 'Thailand', coords: [15.8700, 100.9925], region: 'South-East Asia', color: '#FFEB3B' },
-            { name: 'Laos', coords: [19.8563, 102.4955], region: 'South-East Asia', color: '#FFEB3B' },
-            { name: 'Cambodia', coords: [12.5657, 104.9910], region: 'South-East Asia', color: '#FFEB3B' }
+            { name: 'Myanmar', coords: [21.9162, 95.9560], region: 'South-East Asia', color: '#eab308' },
+            { name: 'Philippines', coords: [12.8797, 121.7740], region: 'South-East Asia', color: '#eab308' },
+            { name: 'Thailand', coords: [15.8700, 100.9925], region: 'South-East Asia', color: '#eab308' },
+            { name: 'Laos', coords: [19.8563, 102.4955], region: 'South-East Asia', color: '#eab308' },
+            { name: 'Cambodia', coords: [12.5657, 104.9910], region: 'South-East Asia', color: '#eab308' }
         ];
         
         // Add markers to map
         countries.forEach(country => {
             const circleMarker = L.circleMarker(country.coords, {
-                radius: 8,
+                radius: 10,
                 fillColor: country.color,
                 color: '#fff',
-                weight: 2,
+                weight: 3,
                 opacity: 1,
-                fillOpacity: 0.8
+                fillOpacity: 0.85
             }).addTo(map);
             
             // Add popup on click
             circleMarker.bindPopup(`
-                <div style="font-family: Arial; min-width: 200px;">
-                    <h3 style="color: #333; margin: 0 0 8px 0; border-bottom: 2px solid ${country.color}; padding-bottom: 8px;">
-                        ${country.name}
-                    </h3>
-                    <p style="margin: 6px 0; color: #666; font-size: 14px;">
-                        <strong>Region:</strong> ${country.region}
-                    </p>
-                    <p style="margin: 6px 0; color: #d32f2f; font-size: 14px;">
-                        <strong>Status:</strong> Conflict-Affected
-                    </p>
-                    <p style="margin: 6px 0; color: #666; font-size: 12px;">
-                        📍 Lat: ${country.coords[0].toFixed(2)}, Lng: ${country.coords[1].toFixed(2)}
-                    </p>
+                <div style="font-family: 'Inter', sans-serif; min-width: 240px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div style="background: ${country.color}; padding: 14px 16px; color: white;">
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 700;">
+                            ${country.name}
+                        </h3>
+                    </div>
+                    <div style="padding: 14px 16px; color: #e2e8f0; font-size: 13px;">
+                        <p style="margin: 0 0 8px 0; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 6px; height: 6px; background: ${country.color}; border-radius: 50%; margin-right: 8px;"></span>
+                            <strong>Region:</strong> ${country.region}
+                        </p>
+                        <p style="margin: 0 0 8px 0; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            <strong>Status:</strong> Conflict-Affected
+                        </p>
+                        <p style="margin: 0; font-size: 12px; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="margin-right: 6px;">📍</span>
+                            ${country.coords[0].toFixed(2)}°, ${country.coords[1].toFixed(2)}°
+                        </p>
+                    </div>
                 </div>
-            `);
+            `, {
+                maxWidth: 280,
+                className: 'custom-popup'
+            });
             
             // Add tooltip on hover
-            circleMarker.bindTooltip(country.name, { permanent: false, direction: 'top' });
+            circleMarker.bindTooltip(country.name, { 
+                permanent: false, 
+                direction: 'top',
+                className: 'custom-tooltip'
+            });
+            
+            // Add hover effect
+            circleMarker.on('mouseover', function() {
+                this.setRadius(14);
+                this.setStyle({ weight: 3, fillOpacity: 1 });
+            });
+            
+            circleMarker.on('mouseout', function() {
+                this.setRadius(10);
+                this.setStyle({ weight: 3, fillOpacity: 0.85 });
+            });
         });
     </script>
 </body>
