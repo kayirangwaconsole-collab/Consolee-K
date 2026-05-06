@@ -19,10 +19,13 @@ Consolee-K/
 ## 🚀 Quick Start
 
 ### View the Interactive Map
-Open the live map at:
+Open the live Education Intelligence map at:
 ```
-https://kayirangwaconsole-collab.github.io/Consolee-K/docs/conflict-map.html
+https://kayirangwaconsole-collab.github.io/Consolee-K/
 ```
+
+### Map Focus
+This map supports the argument for **Building an Adaptive Education Intelligence System** by highlighting 15 priority conflict-affected regions with specific educational insights.
 
 ### Run the Filter Script
 ```bash

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Education Intelligence System | Conflict Regions</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; width: 100%; font-family: 'Inter', sans-serif; overflow: hidden; }
+        
+        #map { height: 100%; width: 100%; background: #0b0e14; }
+
+        /* Minimalist Overlay Label */
+        .map-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .map-title h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .map-title p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+        /* Simple Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .legend-item { display: flex; align-items: center; margin-bottom: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; }
+
+        /* Clean Popups */
+        .leaflet-popup-content-wrapper { background: #0f172a; color: white; border-radius: 4px; }
+        .leaflet-popup-tip { background: #0f172a; }
+        .popup-content b { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="map-title">
+        <h1>Adaptive Education Intelligence System</h1>
+        <p>Target Regions for Educational Continuity & Resilience</p>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="legend">
+        <div style="font-weight: 700; margin-bottom: 10px; color: #60a5fa;">Intelligence Priority Zones</div>
+        <div class="legend-item"><div class="dot" style="background: #ef4444;"></div> Sub-Saharan Africa</div>
+        <div class="legend-item"><div class="dot" style="background: #f97316;"></div> Middle East</div>
+        <div class="legend-item"><div class="dot" style="background: #eab308;"></div> South-East Asia</div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        const map = L.map('map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([15, 55], 3);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO'
+        }).addTo(map);
+
+        const priorityRegions = [
+            // SSA (Red)
+            { name: "Nigeria", coords: [9.08, 7.40], color: "#ef4444", info: "High displacement; critical need for remote adaptive learning." },
+            { name: "Somalia", coords: [2.04, 45.34], color: "#ef4444", info: "Fragmented infrastructure; intelligence hub required for tracking learning gaps." },
+            { name: "South Sudan", coords: [4.85, 31.57], color: "#ef4444", info: "Emergent education system; focus on data-driven resilience." },
+            { name: "Ethiopia", coords: [9.03, 38.74], color: "#ef4444", info: "Regional instability impacting 2M+ learners." },
+            { name: "DRC", coords: [-4.32, 15.32], color: "#ef4444", info: "Vast geographic barriers; needs offline-first adaptive intelligence." },
+            { name: "Cameroon", coords: [3.85, 11.50], color: "#ef4444", info: "Conflict-driven school closures in NW/SW regions." },
+            
+            // ME (Orange)
+            { name: "Syria", coords: [34.8, 38.99], color: "#f97316", info: "Protracted crisis; massive educational data fragmentation." },
+            { name: "Yemen", coords: [15.35, 48.5], color: "#f97316", info: "Systemic collapse; urgent need for mobile intelligence units." },
+            { name: "Iraq", coords: [33.31, 44.36], color: "#f97316", info: "Post-conflict rebuilding; data-driven placement needed." },
+            { name: "Lebanon", coords: [33.89, 35.50], color: "#f97316", info: "High refugee density; cross-border intelligence required." },
+            
+            // SEA (Yellow)
+            { name: "Myanmar", coords: [21.91, 95.95], color: "#eab308", info: "Political instability; decentralized learning intelligence focus." },
+            { name: "Philippines", coords: [12.87, 121.77], color: "#eab308", info: "Mindanao region focus; localized conflict data tracking." },
+            { name: "Thailand", coords: [15.87, 100.99], color: "#eab308", info: "Southern border focus; bilingual intelligence systems." },
+            { name: "Laos", coords: [17.97, 102.63], color: "#eab308", info: "Rural-conflict overlap; digital bridge intelligence." },
+            { name: "Cambodia", coords: [12.56, 104.91], color: "#eab308", info: "Legacy conflict impact; monitoring long-term learning outcomes." }
+        ];
+
+        priorityRegions.forEach(loc => {
+            const marker = L.circleMarker(loc.coords, {
+                radius: 12,
+                fillColor: loc.color,
+                color: "#fff",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <div class="popup-content">
+                    <b style="color: ${loc.color}">${loc.name}</b><br/>
+                    <p style="margin-top: 5px; font-size: 13px;">${loc.info}</p>
+                </div>
+            `);
+        });
+    </script>
+</body>
+</html>
