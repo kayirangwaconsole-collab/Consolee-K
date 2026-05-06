@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Continuity in Conflict-Affected Regions</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid #334155;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav h2 {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 20px;
+        }
+        
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin: 0 20px;
+            transition: color 0.3s;
+            font-size: 14px;
+        }
+        
+        nav a:hover {
+            color: #60a5fa;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 80px 40px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 14px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Content Sections */
+        .section {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .section-subtitle {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+        
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1e293b 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 1px solid #334155;
+            padding: 30px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+            transform: translateY(-4px);
+        }
+        
+        .card h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .card p {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #1e293b 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: #cbd5e1;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        /* Map Section */
+        .map-showcase {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 60px 40px;
+            border-top: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .map-showcase h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .map-preview {
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+        
+        .map-preview iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-top: 1px solid #334155;
+            padding: 40px;
+            text-align: center;
+            color: #64748b;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            nav a {
+                margin: 0 10px;
+            }
+            
+            .hero {
+                padding: 40px 20px;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .section {
+                padding: 40px 20px;
+            }
+            
+            .map-preview iframe {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <h2>🌍 Education Continuity Initiative</h2>
+        <div>
+            <a href="#overview">Overview</a>
+            <a href="#impact">Impact</a>
+            <a href="#map">Interactive Map</a>
+            <a href="conflict-map.html" target="_blank">Full Map →</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Strengthening Education Continuity in Conflict-Affected Regions</h1>
+        <p>A comprehensive data-driven approach to supporting educational infrastructure and institutional resilience across Sub-Saharan Africa, the Middle East, and South-East Asia.</p>
+        <a href="#map" class="cta-button">View Interactive Map</a>
+    </div>
+    
+    <!-- Overview Section -->
+    <div class="section" id="overview">
+        <div class="section-subtitle">Challenge & Opportunity</div>
+        <h2>Understanding the Crisis</h2>
+        <p style="color: #cbd5e1; margin-top: 20px; max-width: 800px;">
+            Over 258 million children remain out of school globally, with conflict-affected regions facing disproportionate barriers to education access. Infrastructure damage, displacement, and resource constraints threaten educational continuity and development opportunities for vulnerable populations.
+        </p>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Data-Driven Solutions</h3>
+                <p>Leverage comprehensive geospatial data to identify educational infrastructure gaps and prioritize interventions.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Targeted Impact</h3>
+                <p>Focus resources on the 15 most vulnerable countries across three critical regions with the highest need.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🚀</div>
+                <h3>Scalable Framework</h3>
+                <p>Adaptable model that can be expanded to additional regions and infrastructure types.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🤝</div>
+                <h3>Collaborative Approach</h3>
+                <p>Integration with local stakeholders, NGOs, and government partners for sustainable implementation.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Impact Section -->
+    <div class="section" id="impact">
+        <div class="section-subtitle">Geographic Scope</div>
+        <h2>Coverage by Region</h2>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="card-icon">🔴</div>
+                <div class="stat-number">6</div>
+                <div class="stat-label">Sub-Saharan Africa Countries</div>
+            </div>
+            <div class="stat">
+                <div class="card-icon">🟠</div>
+                <div class="stat-number">4</div>
+                <div class="stat-label">Middle East Countries</div>
+            </div>
+            <div class="stat">
+                <div class="card-icon">��</div>
+                <div class="stat-number">5</div>
+                <div class="stat-label">South-East Asia Countries</div>
+            </div>
+            <div class="stat">
+                <div class="card-icon">🌍</div>
+                <div class="stat-number">15</div>
+                <div class="stat-label">Total Focus Countries</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Map Section -->
+    <div class="map-showcase" id="map">
+        <div class="section-subtitle" style="text-align: center;">Interactive Visualization</div>
+        <h2 style="text-align: center;">Conflict-Affected Regions Map</h2>
+        <p style="text-align: center; color: #cbd5e1; margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            Explore the geographic distribution of educational infrastructure needs. Click on any marker to view detailed country information.
+        </p>
+        <div class="map-preview">
+            <iframe src="conflict-map.html"></iframe>
+        </div>
+    </div>
+    
+    <!-- Details Section -->
+    <div class="section">
+        <div class="section-subtitle">Regional Breakdown</div>
+        <h2>Countries in Focus</h2>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>🔴 Sub-Saharan Africa (6)</h3>
+                <p>Nigeria, Somalia, South Sudan, Ethiopia, Democratic Republic of Congo, Cameroon</p>
+            </div>
+            <div class="card">
+                <h3>🟠 Middle East (4)</h3>
+                <p>Syria, Yemen, Iraq, Lebanon</p>
+            </div>
+            <div class="card">
+                <h3>🟡 South-East Asia (5)</h3>
+                <p>Myanmar, Philippines, Thailand, Laos, Cambodia</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="section" style="text-align: center; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px;">
+        <h2>Ready to Make an Impact?</h2>
+        <p style="margin: 20px 0; color: #cbd5e1;">
+            Explore the interactive map to understand the scale of the challenge and the opportunities for intervention.
+        </p>
+        <a href="conflict-map.html" target="_blank" class="cta-button">Open Interactive Map</a>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Education Continuity Initiative | Data-Driven Solutions for Conflict-Affected Regions</p>
+        <p style="margin-top: 10px; font-size: 12px;">
+            <a href="https://github.com/kayirangwaconsole-collab/Consolee-K" style="color: #3b82f6; text-decoration: none;">View on GitHub →</a>
+        </p>
+    </footer>
+</body>
+</html>
